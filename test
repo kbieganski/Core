@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -e fail
+
+source env/bin/activate
+python src/main.py test.cr
+llc -filetype=obj -relocation-model=pic out.ll
+gcc out.o -o out
+echo -e "\n===================="
+./out
