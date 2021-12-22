@@ -7,6 +7,7 @@ class Lexer():
 
     def _add_tokens(self):
         self.lexer.add('PRINT', r'print')
+        self.lexer.add('LET', r'let')
         self.lexer.add('IF', r'if')
         self.lexer.add('FN', r'fn')
         self.lexer.add('ID', r'[A-Za-z][A-Za-z0-9]*')
@@ -17,8 +18,17 @@ class Lexer():
         self.lexer.add('SEMICOLON', r'\;')
         self.lexer.add('SUM', r'\+')
         self.lexer.add('SUB', r'\-')
+        self.lexer.add('MUL', r'\*')
+        self.lexer.add('DIV', r'\/')
+        self.lexer.add('MOD', r'\%')
         self.lexer.add('NUMBER', r'\d+')
         self.lexer.add('EQ', r'==')
+        self.lexer.add('NEQ', r'!=')
+        self.lexer.add('GEQ', r'>=')
+        self.lexer.add('LEQ', r'<=')
+        self.lexer.add('ASSIGN', r'\=')
+        self.lexer.add('GT', r'>')
+        self.lexer.add('LT', r'<')
         # Ignore spaces
         self.lexer.ignore('\s+')
 

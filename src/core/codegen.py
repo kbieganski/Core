@@ -57,9 +57,41 @@ class CodeGen(Visitor):
     def visit(self, node):
         return self.builder.sub(self.visit(node.left), self.visit(node.right))
 
+    @visitor(Mul)
+    def visit(self, node):
+        return self.builder.mul(self.visit(node.left), self.visit(node.right))
+
+    @visitor(Div)
+    def visit(self, node):
+        return self.builder.sdiv(self.visit(node.left), self.visit(node.right))
+
+    @visitor(Mod)
+    def visit(self, node):
+        return self.builder.srem(self.visit(node.left), self.visit(node.right))
+
     @visitor(Eq)
     def visit(self, node):
         return self.builder.icmp_signed('==', self.visit(node.left), self.visit(node.right))
+
+    @visitor(Neq)
+    def visit(self, node):
+        return self.builder.icmp_signed('!=', self.visit(node.left), self.visit(node.right))
+
+    @visitor(Gt)
+    def visit(self, node):
+        return self.builder.icmp_signed('>', self.visit(node.left), self.visit(node.right))
+
+    @visitor(Lt)
+    def visit(self, node):
+        return self.builder.icmp_signed('<', self.visit(node.left), self.visit(node.right))
+
+    @visitor(Geq)
+    def visit(self, node):
+        return self.builder.icmp_signed('>=', self.visit(node.left), self.visit(node.right))
+
+    @visitor(Leq)
+    def visit(self, node):
+        return self.builder.icmp_signed('<=', self.visit(node.left), self.visit(node.right))
 
     @visitor(Print)
     def visit(self, node):
@@ -80,16 +112,11 @@ class CodeGen(Visitor):
         # Call Print Function
         self.builder.call(self.printf, [fmt_arg, value])
 
-    @visitor(Block)
-    def visit(self, node):
-        for stmt in node.statements:
-            self.visit(stmt)
-
     @visitor(If)
     def visit(self, node):
         pred = self.visit(node.predicate)
         with self.builder.if_then(pred) as then:
-            self.visit(node.block)
+            self.visit(node.ifblock)
 
     @visitor(Call)
     def visit(self, node):
@@ -112,5 +139,4 @@ class CodeGen(Visitor):
         voidptr_ty = ir.IntType(8).as_pointer()
         printf_ty = ir.FunctionType(ir.IntType(32), [voidptr_ty], var_arg=True)
         self.printf = ir.Function(self.module, printf_ty, name="printf")
-        for func in node.functions:
-            self.visit(func)
+        self.iterate(node)

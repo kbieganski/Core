@@ -45,9 +45,9 @@ def visitor(arg_type):
 class Visitor:
     @visitor(object)
     def visit(self, obj):
-        try:
-            for child in obj:
-                self.visit(child)
-        except TypeError:
-            pass
+        self.iterate(obj)
+
+    def iterate(self, obj):
+        for child in obj:
+            self.visit(child)
 

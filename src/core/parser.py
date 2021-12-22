@@ -1,5 +1,5 @@
 from rply import ParserGenerator
-from .ast import Module, Function, Call, Block, Number, Sum, Sub, Eq, Print, If
+from .ast import *
 
 
 class Parser():
@@ -7,7 +7,8 @@ class Parser():
         self.pg = ParserGenerator(
             # A list of all token names accepted by the parser.
             ['NUMBER', 'ID', 'FN', 'PRINT', 'OPEN_PAREN', 'CLOSE_PAREN', 'OPEN_BRACE', 'CLOSE_BRACE',
-             'SEMICOLON', 'SUM', 'SUB', 'IF', 'EQ']
+             'SEMICOLON', 'SUM', 'SUB', 'MUL', 'DIV', 'MOD', 'EQ', 'NEQ', 'GT', 'LT', 'GEQ', 'LEQ',
+             'ASSIGN', 'IF', 'LET']
         )
 
     def parse(self):
@@ -44,6 +45,10 @@ class Parser():
         def statement(p):
             return p[0]
 
+        @self.pg.production('statement : LET ID ASSIGN expression')
+        def var_declaration(p):
+            return VarDecl(p[2], p[4])
+
         @self.pg.production('statements : ')
         def empty_statements(p):
             return []
@@ -55,7 +60,15 @@ class Parser():
 
         @self.pg.production('expression : expression SUM expression')
         @self.pg.production('expression : expression SUB expression')
+        @self.pg.production('expression : expression MUL expression')
+        @self.pg.production('expression : expression DIV expression')
+        @self.pg.production('expression : expression MOD expression')
         @self.pg.production('expression : expression EQ expression')
+        @self.pg.production('expression : expression NEQ expression')
+        @self.pg.production('expression : expression GT expression')
+        @self.pg.production('expression : expression LT expression')
+        @self.pg.production('expression : expression GEQ expression')
+        @self.pg.production('expression : expression LEQ expression')
         def expression(p):
             left = p[0]
             right = p[2]
@@ -64,8 +77,24 @@ class Parser():
                 return Sum(left, right)
             elif operator.gettokentype() == 'SUB':
                 return Sub(left, right)
+            elif operator.gettokentype() == 'MUL':
+                return Mul(left, right)
+            elif operator.gettokentype() == 'DIV':
+                return Div(left, right)
+            elif operator.gettokentype() == 'MOD':
+                return Mod(left, right)
             elif operator.gettokentype() == 'EQ':
                 return Eq(left, right)
+            elif operator.gettokentype() == 'NEQ':
+                return Neq(left, right)
+            elif operator.gettokentype() == 'GT':
+                return Gt(left, right)
+            elif operator.gettokentype() == 'LT':
+                return Lt(left, right)
+            elif operator.gettokentype() == 'GEQ':
+                return Geq(left, right)
+            elif operator.gettokentype() == 'LEQ':
+                return Leq(left, right)
 
         @self.pg.production('expression : NUMBER')
         def number(p):
