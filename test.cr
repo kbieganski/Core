@@ -1,5 +1,6 @@
-fn do() {
-    print(4 + 4 - 2);
+do(x int32,y int8) {
+    print(4 + 4 + x);
+    print(x*int32(y));
     if 5 == 5 {
         print(12 *2);
         print(10/2);
@@ -23,6 +24,8 @@ fn do() {
     if 5 == 0 { print(12); }
 }
 
-fn main() {
-    do();
+main() {
+    let y = 16;
+    let z = int8(16);
+    do(y, int8(8));
 }

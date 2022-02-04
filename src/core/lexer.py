@@ -16,6 +16,7 @@ class Lexer():
         self.lexer.add('OPEN_BRACE', r'\{')
         self.lexer.add('CLOSE_BRACE', r'\}')
         self.lexer.add('SEMICOLON', r'\;')
+        self.lexer.add('COMMA', r'\,')
         self.lexer.add('SUM', r'\+')
         self.lexer.add('SUB', r'\-')
         self.lexer.add('MUL', r'\*')
@@ -26,7 +27,7 @@ class Lexer():
         self.lexer.add('NEQ', r'!=')
         self.lexer.add('GEQ', r'>=')
         self.lexer.add('LEQ', r'<=')
-        self.lexer.add('ASSIGN', r'\=')
+        self.lexer.add('ASSIGN', r'=')
         self.lexer.add('GT', r'>')
         self.lexer.add('LT', r'<')
         # Ignore spaces

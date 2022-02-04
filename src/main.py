@@ -1,4 +1,4 @@
-from core import Lexer, Parser, CodeGen, IdResolver
+from core import *
 import sys
 
 fname = sys.argv[1]
@@ -8,15 +8,19 @@ with open(fname) as f:
 lexer = Lexer().get_lexer()
 tokens = lexer.lex(text_input)
 
-codegen = CodeGen()
-id_resolver = IdResolver()
 
 pg = Parser()
 pg.parse()
 parser = pg.get_parser()
 module = parser.parse(tokens)
-id_resolver.visit(module)
-codegen.visit(module)
-
-codegen.compile_ir()
-codegen.save_ir("out.ll")
+scope(module)
+primitive_type(module)
+print_tree(module)
+resolve(module)
+cast(module)
+propagate_types(module)
+resolve(module)
+print_tree(module)
+ir = codegen(module)
+with open("out.ll", 'w') as output_file:
+    output_file.write(str(ir))
